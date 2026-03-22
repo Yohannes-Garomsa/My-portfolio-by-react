@@ -50,6 +50,16 @@
   }
 }
 
+details.exp-item summary {
+  list-style: none;
+}
+details.exp-item summary::-webkit-details-marker {
+  display: none;
+}
+details.exp-item[open] summary .exp-chevron {
+  transform: rotate(180deg);
+}
+
 @layer utilities {
   .text-shadow {
     text-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
