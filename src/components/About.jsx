@@ -2,65 +2,112 @@ import React from "react";
 import { motion } from "framer-motion";
 import { site } from "../config/site";
 import {
+  aboutIntro,
+  skillGroups,
+  experiences,
+  focusAreas,
+} from "../data/aboutContent";
+import SectionHeader from "./SectionHeader";
+import {
   MotionSection,
-  MotionH2,
-  MotionP,
   MotionDiv,
-  MotionSpan,
-  MotionUl,
-  MotionLi,
   containerVariants,
   fadeInUpVariants,
-  hoverVariants,
   fadeInRightVariants,
+  hoverVariants,
 } from "../utils/motion";
 
+function SkillCategoryCard({ group }) {
+  return (
+    <div className="card border-white/10 p-6 md:p-7">
+      <div className="mb-5 border-b border-white/10 pb-4">
+        <h3 className="font-display text-lg font-semibold text-white md:text-xl">
+          {group.title}
+        </h3>
+        <p className="mt-1 text-sm text-white/50">{group.description}</p>
+      </div>
+      <ul className="flex flex-wrap gap-2" aria-label={`${group.title} skills`}>
+        {group.skills.map((skill) => (
+          <li key={skill.name}>
+            <div className="flex items-baseline gap-2 rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2 transition-colors hover:border-white/20 hover:bg-white/[0.07]">
+              <span className="text-sm font-medium text-white/90">
+                {skill.name}
+              </span>
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-fuchsia-300/80">
+                {skill.note}
+              </span>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function ExperienceTimeline({ variants }) {
+  return (
+    <MotionDiv variants={variants} className="card border-white/10 p-6 md:p-7">
+      <h3 className="font-display mb-8 text-lg font-semibold text-white md:text-xl">
+        Experience
+      </h3>
+      <ol className="relative space-y-10 before:absolute before:left-[7px] before:top-2 before:bottom-2 before:w-px before:bg-gradient-to-b before:from-white/25 before:via-white/15 before:to-white/5 md:before:left-[9px]">
+        {experiences.map((exp) => (
+          <li key={exp.id} className="relative pl-8 md:pl-10">
+            <span
+              className="absolute left-0 top-2 flex h-4 w-4 items-center justify-center rounded-full border border-white/20 bg-gradient-to-br from-blue-500/40 to-fuchsia-500/40 shadow-[0_0_12px_rgba(168,85,247,0.25)] md:top-2.5"
+              aria-hidden
+            >
+              <span className="h-1.5 w-1.5 rounded-full bg-white/90" />
+            </span>
+            <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-baseline sm:justify-between">
+              <div>
+                <h4 className="font-display text-base font-semibold text-white md:text-lg">
+                  {exp.title}
+                </h4>
+                <p className="gradient-text text-sm font-medium">
+                  {exp.company}
+                  {exp.location ? (
+                    <span className="text-white/45 font-normal">
+                      {" "}
+                      · {exp.location}
+                    </span>
+                  ) : null}
+                </p>
+              </div>
+              <span className="shrink-0 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-white/65">
+                {exp.period}
+              </span>
+            </div>
+            <ul className="mt-4 space-y-2 border-t border-white/5 pt-4">
+              {exp.highlights.map((line) => (
+                <li
+                  key={line}
+                  className="flex gap-3 text-sm leading-relaxed text-white/70 before:mt-2 before:h-1 before:w-1 before:shrink-0 before:rounded-full before:bg-fuchsia-400/80 before:content-['']"
+                >
+                  <span>{line}</span>
+                </li>
+              ))}
+            </ul>
+          </li>
+        ))}
+      </ol>
+    </MotionDiv>
+  );
+}
+
 const About = () => {
-  const skills = [
-    { name: "React", level: 95, color: "from-blue-400 to-blue-600" },
-    { name: "JavaScript", level: 90, color: "from-yellow-400 to-orange-500" },
-    { name: "TypeScript", level: 85, color: "from-blue-500 to-blue-700" },
-    { name: "Tailwind CSS", level: 95, color: "from-cyan-400 to-cyan-600" },
-    { name: "Framer Motion", level: 90, color: "from-purple-400 to-pink-500" },
-    { name: "Node.js", level: 80, color: "from-green-400 to-green-600" },
-  ];
-
-  const experiences = [
-    {
-      title: "Senior Frontend Developer",
-      company: "Tech Corp",
-      period: "2021 - Present",
-      description:
-        "Leading frontend development for enterprise applications, mentoring junior developers, and implementing modern UI/UX patterns.",
-    },
-    {
-      title: "Frontend Developer",
-      company: "Creative Agency",
-      period: "2019 - 2021",
-      description:
-        "Built responsive websites and web applications for clients across various industries, focusing on performance and accessibility.",
-    },
-    {
-      title: "Junior Developer",
-      company: "Startup XYZ",
-      period: "2018 - 2019",
-      description:
-        "Gained experience in modern web development practices and collaborated on full-stack projects.",
-    },
-  ];
-
   return (
     <MotionSection
       id="about"
-      className="py-20 relative"
+      className="relative py-24 md:py-28"
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
-      viewport={{ once: true, amount: 0.3 }}
+      viewport={{ once: true, amount: 0.2 }}
+      aria-labelledby="about-heading"
     >
-      {/* Animated Background */}
       <div className="absolute inset-0 z-0">
         <motion.div
-          className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-full blur-3xl"
+          className="absolute top-0 right-0 h-96 w-96 rounded-full bg-gradient-to-br from-purple-500/20 to-pink-500/20 blur-3xl"
           animate={{
             scale: [1, 1.1, 1],
             opacity: [0.2, 0.4, 0.2],
@@ -72,7 +119,7 @@ const About = () => {
           }}
         />
         <motion.div
-          className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-br from-blue-500/20 to-teal-500/20 rounded-full blur-3xl"
+          className="absolute bottom-0 left-0 h-96 w-96 rounded-full bg-gradient-to-br from-blue-500/20 to-teal-500/20 blur-3xl"
           animate={{
             scale: [1.1, 1, 1.1],
             opacity: [0.4, 0.2, 0.4],
@@ -85,66 +132,50 @@ const About = () => {
         />
       </div>
 
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          {/* Left Column - About Content */}
+      <div className="container relative z-10 mx-auto max-w-6xl px-6">
+        <div className="grid gap-16 lg:grid-cols-12 lg:gap-12 lg:items-start">
           <MotionDiv
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
-            className="space-y-8"
+            viewport={{ once: true, amount: 0.2 }}
+            className="space-y-8 lg:col-span-5"
           >
             <MotionDiv variants={fadeInUpVariants}>
-              <MotionSpan
-                className="inline-block px-4 py-2 bg-white/10 rounded-full text-sm font-medium text-white/80 border border-white/20 mb-4"
-                whileHover={{ scale: 1.05 }}
-              >
-                About Me
-              </MotionSpan>
+              <SectionHeader
+                headingId="about-heading"
+                eyebrow={aboutIntro.eyebrow}
+                titleLead={aboutIntro.titleLead}
+                titleGradient={aboutIntro.titleGradient}
+                titleRest={aboutIntro.titleRest}
+              />
             </MotionDiv>
 
-            <MotionH2
-              variants={fadeInUpVariants}
-              className="text-4xl md:text-5xl font-bold text-white"
-            >
-              Crafting Digital{" "}
-              <MotionSpan className="gradient-text" variants={fadeInUpVariants}>
-                Masterpieces
-              </MotionSpan>
-            </MotionH2>
-
-            <MotionP
-              variants={fadeInUpVariants}
-              className="text-lg text-white/80 leading-relaxed"
-            >
-              With over 5 years of experience in frontend development, I
-              specialize in creating beautiful, functional, and user-centered
-              digital experiences. My passion lies in transforming complex
-              problems into simple, elegant design solutions.
-            </MotionP>
-
-            <MotionP
-              variants={fadeInUpVariants}
-              className="text-white/70 leading-relaxed"
-            >
-              I believe that design is not just about aesthetics, but about
-              creating meaningful interactions that enhance people's lives.
-              Every project I work on is an opportunity to make a positive
-              impact through thoughtful design and innovative technology.
-            </MotionP>
+            {aboutIntro.paragraphs.map((text, i) => (
+              <MotionP key={i} variants={fadeInUpVariants}>
+                {text}
+              </MotionP>
+            ))}
 
             <MotionDiv
-              className="grid grid-cols-2 gap-4"
               variants={fadeInUpVariants}
+              className="grid grid-cols-2 gap-3 sm:gap-4"
             >
-              <div className="text-center p-4 bg-white/5 rounded-lg">
-                <div className="text-2xl font-bold gradient-text">50+</div>
-                <div className="text-sm text-white/60">Projects Completed</div>
+              <div className="rounded-xl border border-white/10 bg-white/[0.04] p-4 text-center">
+                <div className="font-display text-2xl font-bold gradient-text">
+                  {site.stats.projects}
+                </div>
+                <div className="mt-1 text-xs font-medium uppercase tracking-wider text-white/50">
+                  Projects shipped
+                </div>
               </div>
-              <div className="text-center p-4 bg-white/5 rounded-lg">
-                <div className="text-2xl font-bold gradient-text">5+</div>
-                <div className="text-sm text-white/60">Years Experience</div>
+              <div className="rounded-xl border border-white/10 bg-white/[0.04] p-4 text-center">
+                <div className="font-display text-2xl font-bold gradient-text">
+                  {site.stats.years}
+                </div>
+                <div className="mt-1 text-xs font-medium uppercase tracking-wider text-white/50">
+                  Years experience
+                </div>
               </div>
             </MotionDiv>
 
@@ -159,102 +190,71 @@ const About = () => {
                 variants={hoverVariants}
                 className="inline-flex btn-primary"
               >
-                Download Resume
+                Download résumé
               </motion.a>
             </MotionDiv>
           </MotionDiv>
 
-          {/* Right Column - Skills & Experience */}
           <MotionDiv
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
-            className="space-y-12"
+            viewport={{ once: true, amount: 0.15 }}
+            className="space-y-8 lg:col-span-7"
           >
-            {/* Skills */}
-            <MotionDiv variants={fadeInRightVariants} className="card">
-              <h3 className="text-2xl font-bold text-white mb-6">
-                Technical Skills
+            <MotionDiv variants={fadeInRightVariants}>
+              <h3
+                className="font-display mb-4 text-lg font-semibold text-white md:text-xl"
+                id="skills-heading"
+              >
+                Technical skills
               </h3>
-              <MotionUl className="space-y-4">
-                {skills.map((skill, index) => (
-                  <MotionLi
-                    key={skill.name}
-                    variants={fadeInRightVariants}
-                    className="group"
-                  >
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-white font-medium">
-                        {skill.name}
-                      </span>
-                      <span className="text-white/60 text-sm">
-                        {skill.level}%
-                      </span>
-                    </div>
-                    <div className="w-full bg-white/20 rounded-full h-2">
-                      <motion.div
-                        className={`h-2 bg-gradient-to-r ${skill.color} rounded-full`}
-                        initial={{ width: 0 }}
-                        whileInView={{ width: `${skill.level}%` }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 1, delay: index * 0.1 }}
-                      />
-                    </div>
-                  </MotionLi>
+              <p className="mb-6 max-w-xl text-sm text-white/55">
+                Grouped by domain—strength labels describe typical depth, not
+                vanity percentages.
+              </p>
+              <div
+                className="space-y-5"
+                role="region"
+                aria-labelledby="skills-heading"
+              >
+                {skillGroups.map((group) => (
+                  <SkillCategoryCard key={group.id} group={group} />
                 ))}
-              </MotionUl>
+              </div>
             </MotionDiv>
 
-            {/* Experience */}
-            <MotionDiv variants={fadeInRightVariants} className="card">
-              <h3 className="text-2xl font-bold text-white mb-6">Experience</h3>
-              <MotionUl className="space-y-6">
-                {experiences.map((exp, index) => (
-                  <MotionLi
-                    key={exp.title}
-                    variants={fadeInRightVariants}
-                    className="border-l-2 border-white/20 pl-6 hover:border-white/50 transition-colors duration-300"
+            <ExperienceTimeline variants={fadeInRightVariants} />
+
+            <MotionDiv variants={fadeInRightVariants} className="card border-white/10 p-6 md:p-7">
+              <h3 className="font-display mb-2 text-lg font-semibold text-white md:text-xl">
+                How I work
+              </h3>
+              <p className="mb-6 text-sm text-white/55">
+                Principles clients and teams can expect on a project.
+              </p>
+              <motion.ul
+                variants={containerVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.25 }}
+                className="grid gap-4 sm:grid-cols-2"
+              >
+                {focusAreas.map((item) => (
+                  <motion.li
+                    key={item.title}
+                    variants={fadeInUpVariants}
+                    className="rounded-xl border border-white/10 bg-white/[0.03] p-4 transition-colors hover:border-white/20 hover:bg-white/[0.06]"
                   >
-                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
-                      <div>
-                        <h4 className="text-xl font-semibold text-white">
-                          {exp.title}
-                        </h4>
-                        <p className="gradient-text font-medium">{exp.company}</p>
-                      </div>
-                      <span className="text-white/60 text-sm bg-white/10 px-3 py-1 rounded-full">
-                        {exp.period}
-                      </span>
-                    </div>
-                    <p className="text-white/70 mt-2 leading-relaxed">
-                      {exp.description}
+                    <h4 className="font-display text-sm font-semibold text-white">
+                      {item.title}
+                    </h4>
+                    <p className="mt-2 text-sm leading-relaxed text-white/65">
+                      {item.body}
                     </p>
-                  </MotionLi>
+                  </motion.li>
                 ))}
-              </MotionUl>
-            </MotionDiv>
-
-            {/* Fun Facts */}
-            <MotionDiv variants={fadeInRightVariants} className="card">
-              <h3 className="text-2xl font-bold text-white mb-6">Fun Facts</h3>
-              <MotionUl className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {[
-                  { icon: "🚀", text: "Built 50+ projects from scratch" },
-                  { icon: "⚡", text: "Performance optimization enthusiast" },
-                  { icon: "🎨", text: "UI/UX design passionate" },
-                  { icon: "🔧", text: "Problem solver at heart" },
-                ].map((fact, index) => (
-                  <MotionLi
-                    key={index}
-                    variants={fadeInRightVariants}
-                    className="flex items-center gap-3 p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors duration-300"
-                  >
-                    <span className="text-2xl">{fact.icon}</span>
-                    <span className="text-white/80">{fact.text}</span>
-                  </MotionLi>
-                ))}
-              </MotionUl>
+              </motion.ul>
             </MotionDiv>
           </MotionDiv>
         </div>
@@ -262,5 +262,16 @@ const About = () => {
     </MotionSection>
   );
 };
+
+function MotionP({ variants, children }) {
+  return (
+    <motion.p
+      variants={variants}
+      className="text-base leading-relaxed text-white/75 md:text-lg"
+    >
+      {children}
+    </motion.p>
+  );
+}
 
 export default About;
